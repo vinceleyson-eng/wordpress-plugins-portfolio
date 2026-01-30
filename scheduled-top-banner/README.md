@@ -1,130 +1,95 @@
-# 📢 Scheduled Top Banner
+# Scheduled Top Banner - WordPress Plugin
 
-**Professional Marketing & Announcement System**
+A lightweight WordPress plugin to display a customizable announcement banner above your header with scheduling capabilities. Perfect for promotions, announcements, and time-limited offers. Works seamlessly with Elementor and other page builders.
 
-Create attention-grabbing announcement banners with advanced scheduling, analytics tracking, and professional customization options. Perfect for promotions, sales events, and important notifications.
+## Features
 
-## ✨ Premium Features
+- **Scheduling**: Set start and end dates/times for your banner
+- **Customizable Content**: Edit banner text and call-to-action link
+- **Styling Options**: Customize colors, font size, and padding
+- **Dismissible**: Allow visitors to close the banner (with configurable duration)
+- **Mobile Control**: Option to show/hide on mobile devices
+- **Live Preview**: See changes in real-time in the admin panel
+- **Elementor Compatible**: Displays above Elementor headers
+- **Lightweight**: Minimal impact on page load times
 
-### **Advanced Scheduling**
-- ✅ **Precise timing** with date and time controls
-- ✅ **Automatic activation/deactivation** based on schedule
-- ✅ **Campaign duration** management
-- ✅ **Emergency override** controls
+## Installation
 
-### **Smart User Experience**
-- ✅ **Dismissible functionality** with configurable duration
-- ✅ **Cookie-based memory** (hours, days, weeks)
-- ✅ **Smooth animations** for professional UX
-- ✅ **Mobile visibility** controls
-- ✅ **Accessibility compliance**
+1. Download the `scheduled-top-banner` folder
+2. Upload it to `/wp-content/plugins/` directory
+3. Activate the plugin through the 'Plugins' menu in WordPress
+4. Go to **Settings > Top Banner** to configure
 
-### **Analytics & Tracking**
-- ✅ **Click tracking** with database storage
-- ✅ **Campaign performance** metrics
-- ✅ **AJAX-powered** tracking without page impact
-- ✅ **Privacy-compliant** data collection
+## Configuration
 
-## 🛠️ Configuration
+### Banner Status
+- **Enable Banner**: Toggle the banner on/off globally
 
-### **Content Setup**
-```
-Banner Text: "🎉 Black Friday Sale - 50% Off Everything!"
-Link Text: "Shop Now"
-Link URL: "https://yourstore.com/sale"
-New Tab: ✓ Open in new window
-```
+### Banner Content
+- **Banner Text**: The main message displayed in the banner
+- **Link Text**: The clickable call-to-action text (e.g., "Learn More", "Shop Now")
+- **Link URL**: The destination URL for the link
+- **Open in New Tab**: Choose whether the link opens in a new browser tab
 
-### **Scheduling**
-```
-Start Date: 2024-11-29 00:01
-End Date: 2024-12-02 23:59
-Timezone: Automatic (WordPress setting)
-```
+### Schedule
+- **Start Date & Time**: When the banner should start displaying
+- **End Date & Time**: When the banner should stop displaying
+- Leave dates empty for no time restrictions
 
-### **Visual Customization**
-```css
-Background: #ff6b35 (Orange)
-Text Color: #ffffff (White)
-Link Color: #ffed4e (Yellow)
-Font Size: 16px
-Padding: 12px
-```
+### Appearance
+- **Background Color**: Banner background color
+- **Text Color**: Main text color
+- **Link Color**: Call-to-action link color
+- **Font Size**: Text size in pixels (10-24px)
+- **Padding**: Vertical padding in pixels (5-30px)
 
-### **Behavior Settings**
-```
-Dismissible: ✓ Allow users to close
-Dismiss Duration: 24 hours
-Show on Mobile: ✓ Display on mobile devices
-Analytics: ✓ Track clicks and engagement
-```
+### Behavior
+- **Dismissible**: Allow visitors to close the banner with an X button
+- **Dismiss Duration**: How many hours the banner stays hidden after dismissal
+- **Show on Mobile**: Display the banner on mobile devices
 
-## 💼 Business Applications
+## Usage with Elementor
 
-### **E-commerce Promotions**
-```
-Black Friday Sale → Scheduled Banner → Increased Traffic → Sales Boost
-New Product Launch → Announcement Banner → Product Page Traffic
-Limited Time Offer → Countdown Banner → Urgency Creation
-```
+The banner automatically displays above all content, including Elementor headers. It uses a high z-index (999999) to ensure it stays on top.
 
-### **Professional Announcements**
-- **System maintenance** notifications
-- **New service** launches and features
-- **Policy updates** and important changes
-- **Event promotions** and registrations
+If you're using Elementor's sticky header feature, the banner will appear above the sticky header.
 
-## 📊 Analytics Dashboard
+## Hooks & Filters
 
-### **Performance Tracking**
-```
-Campaign: Black Friday 2024
-Impressions: 15,847 views
-Clicks: 1,248 (7.9% CTR)
-Conversions: Track via Google Analytics
-```
+### Actions
+- `stb_before_banner` - Fires before the banner is rendered
+- `stb_after_banner` - Fires after the banner is rendered
 
-## 🎨 Design System
+### Filters
+- `stb_banner_text` - Filter the banner text
+- `stb_should_display` - Filter whether the banner should display
 
-### **Professional Styling**
-- **Above-the-fold** positioning for maximum visibility
-- **Responsive design** for all devices
-- **Brand-consistent** color schemes
-- **Professional animations** and transitions
+## Frequently Asked Questions
 
-### **Integration**
-- **Elementor compatible** - displays above all content
-- **Theme agnostic** - works with any WordPress theme
-- **Performance optimized** - minimal impact on page load
-- **SEO friendly** - doesn't interfere with search rankings
+**Q: The banner isn't showing up. What should I check?**
+1. Make sure the banner is enabled in settings
+2. Check if the current date/time is within the scheduled period
+3. Clear any caching plugins
+4. Check if you previously dismissed the banner (clear cookies)
 
-## 📈 Perfect For
+**Q: How do I make the banner always visible?**
+Leave both the start date and end date fields empty.
 
-- **E-commerce stores** with regular promotions
-- **SaaS companies** announcing new features
-- **Professional services** with seasonal campaigns
-- **Content creators** promoting courses/events
-- **Non-profits** for fundraising drives
+**Q: Can I use HTML in the banner text?**
+For security reasons, HTML is not allowed in the banner text. Use the styling options provided.
 
-## 🔧 Advanced Features
+**Q: How do I reset a dismissed banner for testing?**
+Clear your browser cookies or use an incognito/private window.
 
-### **A/B Testing Ready**
-```php
-// Rotate between banner variations
-$variants = [
-    'variant_a' => ['text' => 'Save 50% Today!', 'color' => '#ff0000'],
-    'variant_b' => ['text' => 'Limited Time!', 'color' => '#00ff00']
-];
-```
+## Changelog
 
-### **Marketing Integration**
-- **Google Analytics** event tracking
-- **Facebook Pixel** conversion tracking
-- **Email campaign** coordination
-- **Social media** synchronized messaging
+### 1.0.0
+- Initial release
 
-**Grab attention and drive conversions with professional banner campaigns.**
+## License
 
----
+GPL v2 or later
 
-*Professional marketing automation for maximum impact.*
+## Support
+
+For support, please contact [your-email@example.com] or create an issue on GitHub.

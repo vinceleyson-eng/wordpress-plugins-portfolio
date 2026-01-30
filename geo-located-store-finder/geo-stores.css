@@ -1,0 +1,483 @@
+/* Geo-Located Store Finder Styles */
+
+.geo-stores-loading {
+    text-align: center;
+    padding: 30px 20px;
+    color: #666;
+    font-style: italic;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.geo-stores-error {
+    text-align: center;
+    padding: 20px;
+    color: #d63638;
+    background-color: #fef7f7;
+    border: 1px solid #d63638;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.geo-stores-wrapper {
+    margin: 20px 0;
+}
+
+.geo-stores-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #0073aa;
+}
+
+.geo-stores-header h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.user-location-info {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Store Address Search Form */
+.store-address-search {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1px solid #e0e0e0;
+}
+
+.store-address-search input[type="text"] {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.store-address-search input[type="text"]:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+}
+
+.store-address-search button {
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.store-address-search button[type="submit"] {
+    background: #0073aa;
+    color: white;
+}
+
+.store-address-search button[type="submit"]:hover {
+    background: #005177;
+}
+
+.store-address-search button[type="button"] {
+    background: #666;
+    color: white;
+}
+
+.store-address-search button[type="button"]:hover {
+    background: #555;
+}
+
+/* Map Container */
+.geo-stores-map {
+    margin-bottom: 25px;
+}
+
+#stores-map {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* List Layout (Default) */
+.geo-stores-list .geo-store-item {
+    display: flex;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.geo-stores-list .geo-store-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-color: #0073aa;
+}
+
+.geo-stores-list .geo-store-image {
+    flex: 0 0 160px;
+    margin-right: 20px;
+}
+
+.geo-stores-list .geo-store-image img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.geo-stores-list .geo-store-content {
+    flex: 1;
+}
+
+/* Grid Layout */
+.geo-stores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.geo-stores-grid .geo-store-item {
+    padding: 20px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.geo-stores-grid .geo-store-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-color: #0073aa;
+}
+
+.geo-stores-grid .geo-store-image {
+    margin-bottom: 15px;
+}
+
+.geo-stores-grid .geo-store-image img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Store Item Components */
+.geo-store-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.geo-store-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.geo-store-title a {
+    color: #0073aa;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.geo-store-title a:hover {
+    color: #005177;
+    text-decoration: underline;
+}
+
+.geo-store-distance {
+    background: #0073aa;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.geo-store-address {
+    margin-bottom: 12px;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.address-icon {
+    margin-right: 5px;
+}
+
+.geo-store-contact {
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.geo-store-contact a {
+    color: #0073aa;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: color 0.2s ease;
+}
+
+.geo-store-contact a:hover {
+    color: #005177;
+    text-decoration: underline;
+}
+
+.geo-store-hours {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #0073aa;
+}
+
+.geo-store-excerpt {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.geo-store-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.geo-store-actions .button {
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.geo-store-actions .store-details {
+    background: #0073aa;
+    color: white;
+}
+
+.geo-store-actions .store-details:hover {
+    background: #005177;
+}
+
+.geo-store-actions .get-directions {
+    background: #28a745;
+    color: white;
+}
+
+.geo-store-actions .get-directions:hover {
+    background: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .geo-stores-list .geo-store-item {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .geo-stores-list .geo-store-image {
+        flex: none;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .geo-stores-list .geo-store-image img {
+        height: 160px;
+    }
+    
+    .geo-stores-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .geo-store-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .geo-store-title {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .geo-store-distance {
+        align-self: flex-start;
+    }
+    
+    .store-address-search > div {
+        flex-direction: column;
+    }
+    
+    .store-address-search input[type="text"] {
+        margin-bottom: 10px;
+    }
+    
+    .store-address-search button {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .geo-stores-wrapper {
+        margin: 15px 0;
+    }
+    
+    .geo-store-item {
+        padding: 12px !important;
+    }
+    
+    .geo-stores-header h3 {
+        font-size: 20px;
+    }
+    
+    .geo-store-actions {
+        flex-direction: column;
+    }
+    
+    .geo-store-actions .button {
+        text-align: center;
+    }
+}
+
+/* Loading Animation */
+.geo-stores-loading::after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #0073aa;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Admin Styles */
+.geo-stores-admin-notice {
+    background: #fff;
+    border-left: 4px solid #0073aa;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin: 5px 15px 2px;
+    padding: 12px;
+}
+
+/* Geocoding Page Styles */
+#geocode-progress {
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+#geocode-progress p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+
+.geocode-status {
+    font-weight: bold;
+}
+
+/* Meta Box Styles */
+.store-details-meta-box table {
+    width: 100%;
+}
+
+.store-details-meta-box th {
+    width: 150px;
+    text-align: left;
+    vertical-align: top;
+    padding: 10px 0;
+}
+
+.store-details-meta-box td {
+    padding: 10px 0;
+}
+
+.store-details-meta-box input,
+.store-details-meta-box textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.store-details-meta-box .description {
+    color: #666;
+    font-style: italic;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* Store Locations Admin Columns */
+.column-store_coordinates {
+    width: 80px;
+    text-align: center;
+}
+
+.column-store_address {
+    width: 200px;
+}
+
+/* Empty State */
+.no-stores-found {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.no-stores-found h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+/* Print Styles */
+@media print {
+    .geo-store-actions,
+    .store-address-search,
+    .geo-stores-map {
+        display: none !important;
+    }
+    
+    .geo-store-item {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
