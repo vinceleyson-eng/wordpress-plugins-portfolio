@@ -3,7 +3,7 @@
  * Plugin Name: Custom Quiz Plugin
  * Plugin URI: https://example.com
  * Description: Create quizzes with custom questions and route users to specific result pages based on their answers
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Your Name
  * Author URI: https://example.com
  * License: GPL v2 or later
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('CUSTOM_QUIZ_VERSION', '1.3.0');
+define('CUSTOM_QUIZ_VERSION', '1.4.0');
 define('CUSTOM_QUIZ_PATH', plugin_dir_path(__FILE__));
 define('CUSTOM_QUIZ_URL', plugin_dir_url(__FILE__));
 
@@ -25,6 +25,7 @@ require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-post-types.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-meta-boxes.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-shortcode.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-ajax.php';
+require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-import-export.php';
 
 /**
  * Initialize the plugin
@@ -34,6 +35,7 @@ function custom_quiz_init() {
     new Quiz_Meta_Boxes();
     new Quiz_Shortcode();
     new Quiz_Ajax();
+    new Quiz_Import_Export();
 }
 add_action('plugins_loaded', 'custom_quiz_init');
 
