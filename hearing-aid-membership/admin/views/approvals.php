@@ -36,7 +36,6 @@ if (isset($_POST['ham_approve_store'])) {
         'post_status' => 'publish'
     ));
     
-    // Send notification to user
     $post = get_post($post_id);
     $user = get_userdata($post->post_author);
     
@@ -48,16 +47,17 @@ if (isset($_POST['ham_approve_store'])) {
     
     wp_mail($user->user_email, $subject, $message);
     
-    echo '<div class="notice notice-success"><p><strong>Store approved!</strong> User has been notified.</p></div>';
+    echo '<div class="notice notice-success is-dismissible"><p><strong>Store approved!</strong> User has been notified.</p></div>';
+    
+    // Refresh list
+    $pending_stores = get_posts(array('post_type' => 'hearing-aid-store', 'post_status' => 'pending', 'posts_per_page' => -1));
 }
 
 if (isset($_POST['ham_reject_store'])) {
     check_admin_referer('ham_approve_' . $_POST['post_id']);
-    $post_id = intval($_POST['post_id']);
-    
-    wp_trash_post($post_id);
-    
-    echo '<div class="notice notice-success"><p><strong>Store rejected and moved to trash.</strong></p></div>';
+    wp_trash_post(intval($_POST['post_id']));
+    echo '<div class="notice notice-warning is-dismissible"><p><strong>Store rejected and moved to trash.</strong></p></div>';
+    $pending_stores = get_posts(array('post_type' => 'hearing-aid-store', 'post_status' => 'pending', 'posts_per_page' => -1));
 }
 
 if (isset($_POST['ham_approve_audiologist'])) {
@@ -69,7 +69,6 @@ if (isset($_POST['ham_approve_audiologist'])) {
         'post_status' => 'publish'
     ));
     
-    // Send notification to user
     $post = get_post($post_id);
     $user = get_userdata($post->post_author);
     
@@ -81,113 +80,201 @@ if (isset($_POST['ham_approve_audiologist'])) {
     
     wp_mail($user->user_email, $subject, $message);
     
-    echo '<div class="notice notice-success"><p><strong>Audiologist approved!</strong> User has been notified.</p></div>';
+    echo '<div class="notice notice-success is-dismissible"><p><strong>Audiologist approved!</strong> User has been notified.</p></div>';
+    $pending_audiologists = get_posts(array('post_type' => 'audiologist', 'post_status' => 'pending', 'posts_per_page' => -1));
 }
 
 if (isset($_POST['ham_reject_audiologist'])) {
     check_admin_referer('ham_approve_audio_' . $_POST['post_id']);
-    $post_id = intval($_POST['post_id']);
-    
-    wp_trash_post($post_id);
-    
-    echo '<div class="notice notice-success"><p><strong>Audiologist profile rejected and moved to trash.</strong></p></div>';
+    wp_trash_post(intval($_POST['post_id']));
+    echo '<div class="notice notice-warning is-dismissible"><p><strong>Audiologist profile rejected and moved to trash.</strong></p></div>';
+    $pending_audiologists = get_posts(array('post_type' => 'audiologist', 'post_status' => 'pending', 'posts_per_page' => -1));
 }
 
+$total_pending = count($pending_stores) + count($pending_audiologists);
 ?>
+
+<style>
+    .ham-card { 
+        background: #fff; 
+        border: 1px solid #c3c4c7; 
+        box-shadow: 0 1px 1px rgba(0,0,0,.04);
+        padding: 0;
+        margin-top: 20px;
+        max-width: none !important;
+    }
+    .ham-card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e1e1e1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .ham-card-header h2 { margin: 0; font-size: 16px; }
+    .ham-count-badge {
+        background: #f0b429;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    
+    .ham-table { width: 100%; border-collapse: collapse; }
+    .ham-table th, .ham-table td { 
+        padding: 15px 20px; 
+        text-align: left; 
+        border-bottom: 1px solid #f0f0f1; 
+        vertical-align: top;
+    }
+    .ham-table th { 
+        background: #f6f7f7; 
+        font-weight: 600; 
+        font-size: 13px;
+        color: #50575e;
+    }
+    .ham-table tr:hover { background: #f9f9f9; }
+    .ham-table tr:last-child td { border-bottom: none; }
+    
+    .ham-store-name { font-size: 15px; font-weight: 600; color: #1d2327; margin-bottom: 5px; }
+    .ham-user-info { font-size: 13px; }
+    .ham-user-info strong { color: #1d2327; }
+    .ham-user-info small { color: #666; word-break: break-all; }
+    .ham-membership-badge {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 500;
+        color: white;
+    }
+    
+    .ham-contact-info { font-size: 13px; line-height: 1.8; }
+    .ham-contact-info div { display: flex; align-items: flex-start; gap: 6px; }
+    
+    .ham-time { color: #666; font-size: 13px; }
+    
+    .ham-actions { white-space: nowrap; }
+    .ham-actions form { display: inline-block; margin-right: 5px; }
+    .ham-actions .button { padding: 4px 12px; }
+    
+    .ham-empty { 
+        padding: 40px; 
+        text-align: center; 
+        background: #f0f6fc;
+        border: 1px solid #c3c4c7;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+    .ham-empty p { margin: 0; font-size: 15px; color: #1d2327; }
+    
+    .ham-recent { padding: 15px 20px; }
+    .ham-recent-item { 
+        padding: 10px 0; 
+        border-bottom: 1px solid #f0f0f1; 
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .ham-recent-item:last-child { border-bottom: none; }
+    .ham-check { color: #00a32a; font-size: 18px; }
+</style>
 
 <div class="wrap">
     <h1>
         Pending Approvals
         <?php if ($total_pending > 0): ?>
-            <span class="update-plugins count-<?php echo $total_pending; ?>"><span class="update-count"><?php echo $total_pending; ?></span></span>
+            <span class="ham-count-badge" style="margin-left: 10px;"><?php echo $total_pending; ?> pending</span>
         <?php endif; ?>
     </h1>
     
     <?php if ($total_pending === 0): ?>
-        <div class="notice notice-info" style="padding: 20px;">
-            <p style="font-size: 16px; margin: 0;">✅ <strong>All caught up!</strong> No pending submissions at this time.</p>
+        <div class="ham-empty">
+            <p>✅ <strong>All caught up!</strong> No pending submissions at this time.</p>
         </div>
     <?php endif; ?>
     
     <!-- Pending Store Locations -->
     <?php if (!empty($pending_stores)): ?>
-        <div class="card" style="margin-top: 20px;">
-            <h2 style="margin: 20px; padding-bottom: 10px; border-bottom: 2px solid #ddd;">
-                Store Locations Pending Approval
-                <span style="background: #f0b429; color: white; padding: 3px 10px; border-radius: 12px; font-size: 14px; margin-left: 10px;">
-                    <?php echo count($pending_stores); ?>
-                </span>
-            </h2>
+        <div class="ham-card">
+            <div class="ham-card-header">
+                <h2>🏪 Store Locations Pending Approval</h2>
+                <span class="ham-count-badge"><?php echo count($pending_stores); ?></span>
+            </div>
             
-            <table class="wp-list-table widefat fixed striped">
+            <table class="ham-table">
                 <thead>
                     <tr>
-                        <th style="width: 30%;">Store Name</th>
+                        <th style="width: 25%;">Store Name</th>
                         <th style="width: 20%;">Submitted By</th>
-                        <th style="width: 20%;">Contact Info</th>
-                        <th style="width: 15%;">Submitted</th>
-                        <th style="width: 15%;">Actions</th>
+                        <th style="width: 25%;">Contact Info</th>
+                        <th style="width: 12%;">Submitted</th>
+                        <th style="width: 18%;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($pending_stores as $store): 
                         $user = get_userdata($store->post_author);
-                        $store_phone = get_field('store_phone_number', $store->ID);
-                        $store_address = get_field('store_address', $store->ID);
-                        $store_email = get_field('store_email', $store->ID);
+                        $store_phone = function_exists('get_field') ? get_field('store_phone_number', $store->ID) : get_post_meta($store->ID, 'store_phone_number', true);
+                        $store_address = function_exists('get_field') ? get_field('store_address', $store->ID) : get_post_meta($store->ID, 'store_address', true);
+                        $store_email = function_exists('get_field') ? get_field('store_email', $store->ID) : get_post_meta($store->ID, 'store_email', true);
                         
-                        // Get user's membership
                         global $wpdb;
                         $membership = $wpdb->get_row($wpdb->prepare(
                             "SELECT * FROM {$wpdb->prefix}ham_memberships WHERE user_id = %d AND status = 'active' ORDER BY created_at DESC LIMIT 1",
                             $user->ID
                         ));
+                        
+                        $badge_colors = array('preferred' => '#2c5f5d', 'verified' => '#00a32a', 'unverified' => '#999');
                     ?>
                         <tr>
                             <td>
-                                <strong style="font-size: 16px;"><?php echo esc_html($store->post_title); ?></strong>
-                                <div class="row-actions">
-                                    <a href="<?php echo get_edit_post_link($store->ID); ?>">Edit Full Details</a>
+                                <div class="ham-store-name"><?php echo esc_html($store->post_title); ?></div>
+                                <a href="<?php echo get_edit_post_link($store->ID); ?>" style="font-size: 12px;">Edit Full Details →</a>
+                            </td>
+                            <td>
+                                <div class="ham-user-info">
+                                    <strong><?php echo esc_html($user->display_name); ?></strong><br>
+                                    <small><?php echo esc_html($user->user_email); ?></small>
+                                    <?php if ($membership): ?>
+                                        <br><span class="ham-membership-badge" style="background: <?php echo $badge_colors[$membership->membership_type] ?? '#999'; ?>;">
+                                            <?php echo ucfirst($membership->membership_type); ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             <td>
-                                <strong><?php echo esc_html($user->display_name); ?></strong><br>
-                                <small><?php echo esc_html($user->user_email); ?></small>
-                                <?php if ($membership): ?>
-                                    <br><span style="display: inline-block; margin-top: 5px; padding: 3px 8px; background: <?php echo $membership->membership_type === 'preferred' ? '#2c5f5d' : '#2271b1'; ?>; color: white; font-size: 11px; border-radius: 10px;">
-                                        <?php echo ucfirst($membership->membership_type); ?>
-                                    </span>
-                                <?php endif; ?>
+                                <div class="ham-contact-info">
+                                    <?php if ($store_address): ?>
+                                        <div>📍 <?php echo esc_html($store_address); ?></div>
+                                    <?php endif; ?>
+                                    <?php if ($store_phone): ?>
+                                        <div>📞 <?php echo esc_html($store_phone); ?></div>
+                                    <?php endif; ?>
+                                    <?php if ($store_email): ?>
+                                        <div>✉️ <?php echo esc_html($store_email); ?></div>
+                                    <?php endif; ?>
+                                    <?php if (!$store_address && !$store_phone && !$store_email): ?>
+                                        <span style="color: #999;">No contact info</span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                             <td>
-                                <?php if ($store_address): ?>
-                                    <div>📍 <?php echo esc_html($store_address); ?></div>
-                                <?php endif; ?>
-                                <?php if ($store_phone): ?>
-                                    <div>📞 <?php echo esc_html($store_phone); ?></div>
-                                <?php endif; ?>
-                                <?php if ($store_email): ?>
-                                    <div>✉️ <?php echo esc_html($store_email); ?></div>
-                                <?php endif; ?>
+                                <span class="ham-time"><?php echo human_time_diff(strtotime($store->post_date), current_time('timestamp')); ?> ago</span>
                             </td>
-                            <td>
-                                <?php echo human_time_diff(strtotime($store->post_date), current_time('timestamp')) . ' ago'; ?>
-                            </td>
-                            <td>
-                                <form method="post" style="display: inline;">
+                            <td class="ham-actions">
+                                <form method="post">
                                     <?php wp_nonce_field('ham_approve_' . $store->ID); ?>
                                     <input type="hidden" name="post_id" value="<?php echo $store->ID; ?>">
-                                    <button type="submit" name="ham_approve_store" class="button button-primary" 
-                                            onclick="return confirm('Approve this store location?');">
+                                    <button type="submit" name="ham_approve_store" class="button button-primary" onclick="return confirm('Approve this store location?');">
                                         ✓ Approve
                                     </button>
                                 </form>
-                                
-                                <form method="post" style="display: inline; margin-left: 5px;">
+                                <form method="post">
                                     <?php wp_nonce_field('ham_approve_' . $store->ID); ?>
                                     <input type="hidden" name="post_id" value="<?php echo $store->ID; ?>">
-                                    <button type="submit" name="ham_reject_store" class="button" 
-                                            onclick="return confirm('Reject and trash this store?');">
+                                    <button type="submit" name="ham_reject_store" class="button" onclick="return confirm('Reject and trash this store?');">
                                         ✗ Reject
                                     </button>
                                 </form>
@@ -201,22 +288,20 @@ if (isset($_POST['ham_reject_audiologist'])) {
     
     <!-- Pending Audiologists -->
     <?php if (!empty($pending_audiologists)): ?>
-        <div class="card" style="margin-top: 20px;">
-            <h2 style="margin: 20px; padding-bottom: 10px; border-bottom: 2px solid #ddd;">
-                Audiologist Profiles Pending Approval
-                <span style="background: #f0b429; color: white; padding: 3px 10px; border-radius: 12px; font-size: 14px; margin-left: 10px;">
-                    <?php echo count($pending_audiologists); ?>
-                </span>
-            </h2>
+        <div class="ham-card">
+            <div class="ham-card-header">
+                <h2>👨‍⚕️ Audiologist Profiles Pending Approval</h2>
+                <span class="ham-count-badge"><?php echo count($pending_audiologists); ?></span>
+            </div>
             
-            <table class="wp-list-table widefat fixed striped">
+            <table class="ham-table">
                 <thead>
                     <tr>
-                        <th style="width: 30%;">Audiologist Name</th>
+                        <th style="width: 25%;">Audiologist</th>
                         <th style="width: 20%;">Submitted By</th>
                         <th style="width: 25%;">Details</th>
-                        <th style="width: 15%;">Submitted</th>
-                        <th style="width: 15%;">Actions</th>
+                        <th style="width: 12%;">Submitted</th>
+                        <th style="width: 18%;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -224,49 +309,52 @@ if (isset($_POST['ham_reject_audiologist'])) {
                         $user = get_userdata($audiologist->post_author);
                         $linked_store_id = get_post_meta($audiologist->ID, 'linked_store_id', true);
                         $linked_store = $linked_store_id ? get_post($linked_store_id) : null;
+                        $bio = function_exists('get_field') ? get_field('audiologists_bio', $audiologist->ID) : '';
                     ?>
                         <tr>
                             <td>
-                                <strong style="font-size: 16px;"><?php echo esc_html($audiologist->post_title); ?></strong>
+                                <div class="ham-store-name"><?php echo esc_html($audiologist->post_title); ?></div>
                                 <?php if ($audiologist->post_excerpt): ?>
-                                    <br><small style="color: #666;"><?php echo esc_html($audiologist->post_excerpt); ?></small>
+                                    <div style="color: #666; font-size: 13px; margin-bottom: 5px;"><?php echo esc_html($audiologist->post_excerpt); ?></div>
                                 <?php endif; ?>
-                                <div class="row-actions">
-                                    <a href="<?php echo get_edit_post_link($audiologist->ID); ?>">Edit Full Details</a>
+                                <a href="<?php echo get_edit_post_link($audiologist->ID); ?>" style="font-size: 12px;">Edit Full Details →</a>
+                            </td>
+                            <td>
+                                <div class="ham-user-info">
+                                    <strong><?php echo esc_html($user->display_name); ?></strong><br>
+                                    <small><?php echo esc_html($user->user_email); ?></small>
                                 </div>
                             </td>
                             <td>
-                                <strong><?php echo esc_html($user->display_name); ?></strong><br>
-                                <small><?php echo esc_html($user->user_email); ?></small>
+                                <div class="ham-contact-info">
+                                    <?php if ($linked_store): ?>
+                                        <div>📍 Works at: <strong><?php echo esc_html($linked_store->post_title); ?></strong></div>
+                                    <?php endif; ?>
+                                    <?php if ($bio): ?>
+                                        <div style="margin-top: 5px; color: #666; font-style: italic;">
+                                            <?php echo esc_html(wp_trim_words(strip_tags($bio), 15)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!$linked_store && !$bio): ?>
+                                        <span style="color: #999;">No additional details</span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                             <td>
-                                <?php if ($linked_store): ?>
-                                    <div>📍 Works at: <strong><?php echo esc_html($linked_store->post_title); ?></strong></div>
-                                <?php endif; ?>
-                                <?php if ($audiologist->post_content): ?>
-                                    <div style="margin-top: 5px; color: #666; font-style: italic;">
-                                        <?php echo esc_html(wp_trim_words($audiologist->post_content, 15)); ?>
-                                    </div>
-                                <?php endif; ?>
+                                <span class="ham-time"><?php echo human_time_diff(strtotime($audiologist->post_date), current_time('timestamp')); ?> ago</span>
                             </td>
-                            <td>
-                                <?php echo human_time_diff(strtotime($audiologist->post_date), current_time('timestamp')) . ' ago'; ?>
-                            </td>
-                            <td>
-                                <form method="post" style="display: inline;">
+                            <td class="ham-actions">
+                                <form method="post">
                                     <?php wp_nonce_field('ham_approve_audio_' . $audiologist->ID); ?>
                                     <input type="hidden" name="post_id" value="<?php echo $audiologist->ID; ?>">
-                                    <button type="submit" name="ham_approve_audiologist" class="button button-primary"
-                                            onclick="return confirm('Approve this audiologist profile?');">
+                                    <button type="submit" name="ham_approve_audiologist" class="button button-primary" onclick="return confirm('Approve this audiologist profile?');">
                                         ✓ Approve
                                     </button>
                                 </form>
-                                
-                                <form method="post" style="display: inline; margin-left: 5px;">
+                                <form method="post">
                                     <?php wp_nonce_field('ham_approve_audio_' . $audiologist->ID); ?>
                                     <input type="hidden" name="post_id" value="<?php echo $audiologist->ID; ?>">
-                                    <button type="submit" name="ham_reject_audiologist" class="button"
-                                            onclick="return confirm('Reject and trash this profile?');">
+                                    <button type="submit" name="ham_reject_audiologist" class="button" onclick="return confirm('Reject and trash this profile?');">
                                         ✗ Reject
                                     </button>
                                 </form>
@@ -280,8 +368,8 @@ if (isset($_POST['ham_reject_audiologist'])) {
     
     <!-- Recently Approved -->
     <?php
-    $recently_approved_stores = get_posts(array(
-        'post_type' => 'hearing-aid-store',
+    $recently_approved = get_posts(array(
+        'post_type' => array('hearing-aid-store', 'audiologist'),
         'post_status' => 'publish',
         'posts_per_page' => 5,
         'orderby' => 'modified',
@@ -289,56 +377,35 @@ if (isset($_POST['ham_reject_audiologist'])) {
         'date_query' => array(
             array(
                 'column' => 'post_modified',
-                'after' => '24 hours ago'
+                'after' => '7 days ago'
             )
         )
     ));
     
-    if (!empty($recently_approved_stores)):
+    if (!empty($recently_approved)):
     ?>
-        <div class="card" style="margin-top: 20px;">
-            <h2 style="margin: 20px; padding-bottom: 10px; border-bottom: 2px solid #ddd;">
-                Recently Approved (Last 24 Hours)
-            </h2>
-            
-            <table class="wp-list-table widefat">
-                <tbody>
-                    <?php foreach ($recently_approved_stores as $store): ?>
-                        <tr>
-                            <td style="padding: 10px;">
-                                <span style="color: #00a32a; font-size: 18px; margin-right: 10px;">✓</span>
-                                <strong><?php echo esc_html($store->post_title); ?></strong>
-                                <span style="color: #666; margin-left: 10px;">
-                                    - Approved <?php echo human_time_diff(strtotime($store->post_modified), current_time('timestamp')) . ' ago'; ?>
-                                </span>
-                                <div class="row-actions">
-                                    <a href="<?php echo get_permalink($store->ID); ?>" target="_blank">View</a> |
-                                    <a href="<?php echo get_edit_post_link($store->ID); ?>">Edit</a>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <div class="ham-card">
+            <div class="ham-card-header">
+                <h2>✅ Recently Approved (Last 7 Days)</h2>
+            </div>
+            <div class="ham-recent">
+                <?php foreach ($recently_approved as $item): ?>
+                    <div class="ham-recent-item">
+                        <span class="ham-check">✓</span>
+                        <div style="flex: 1;">
+                            <strong><?php echo esc_html($item->post_title); ?></strong>
+                            <span style="color: #666; margin-left: 8px; font-size: 13px;">
+                                (<?php echo $item->post_type === 'hearing-aid-store' ? 'Store' : 'Audiologist'; ?>)
+                            </span>
+                            <span style="color: #999; margin-left: 8px; font-size: 12px;">
+                                <?php echo human_time_diff(strtotime($item->post_modified), current_time('timestamp')); ?> ago
+                            </span>
+                        </div>
+                        <a href="<?php echo get_permalink($item->ID); ?>" target="_blank" class="button button-small">View</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php endif; ?>
     
 </div>
-
-<style>
-.update-plugins {
-    display: inline-block;
-    vertical-align: top;
-    box-sizing: border-box;
-    margin: 1px 0 -1px 2px;
-    padding: 0 5px;
-    min-width: 18px;
-    height: 18px;
-    border-radius: 9px;
-    background-color: #d63638;
-    color: #fff;
-    font-size: 11px;
-    line-height: 1.6;
-    text-align: center;
-}
-</style>
