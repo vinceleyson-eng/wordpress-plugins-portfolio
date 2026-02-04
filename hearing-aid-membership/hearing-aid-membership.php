@@ -142,6 +142,7 @@ class HA_Membership {
     
     /**
      * Redirect wp-login.php to custom member login
+     * Only redirects members, not admins
      */
     public function redirect_to_custom_login() {
         // Allow logout to work
@@ -149,8 +150,8 @@ class HA_Membership {
             return;
         }
         
-        // Don't redirect admins
-        if (current_user_can('manage_options')) {
+        // Allow password reset
+        if (isset($_GET['action']) && in_array($_GET['action'], array('lostpassword', 'rp', 'resetpass', 'register'))) {
             return;
         }
         
@@ -159,11 +160,38 @@ class HA_Membership {
             return;
         }
         
-        // Redirect non-admin users to custom login
-        if (!is_user_logged_in()) {
+        // Don't redirect during login POST (actual login attempt)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            return;
+        }
+        
+        // Don't redirect if already logged in
+        if (is_user_logged_in()) {
+            return;
+        }
+        
+        // Allow admin access via /wp-login.php?admin or /wp-admin/ redirect
+        if (isset($_GET['admin']) || isset($_GET['redirect_to']) && strpos($_GET['redirect_to'], 'wp-admin') !== false) {
+            return;
+        }
+        
+        // Check if coming from wp-admin (trying to access backend)
+        $referer = wp_get_referer();
+        if ($referer && strpos($referer, 'wp-admin') !== false) {
+            return;
+        }
+        
+        // Only redirect to member login for regular front-end login attempts
+        // This allows admins to still use wp-login.php directly
+        // Members are encouraged to use /member-login/ instead
+        if (isset($_GET['member']) || (isset($_GET['redirect_to']) && strpos($_GET['redirect_to'], 'my-account') !== false)) {
             wp_redirect(home_url('/member-login/'));
             exit;
         }
+        
+        // Default: Don't redirect - allow normal wp-login.php access
+        // This ensures admins can always log in
+        return;
     }
     
     /**
