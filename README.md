@@ -24,6 +24,15 @@ A collection of custom WordPress plugins showcasing expertise in **e-commerce**,
 - Shortcode integration and extensive documentation
 - **Professional OOP architecture**
 
+### 🏥 [Hearing Aid Provider Membership](./hearing-aid-membership/)
+**Complete SaaS Membership System**
+- Full Stripe subscription integration with recurring billing
+- Multi-tier memberships (Free, Verified, Preferred)
+- Member portal with custom login and dashboard
+- Store & audiologist profile management
+- Admin tools with tabbed interface and bulk actions
+- **Enterprise-grade membership platform**
+
 ### 📍 [Geo-Located Store Finder](./geo-located-store-finder/)
 **Advanced Location Technology**
 - HTML5 geolocation with IP fallback
@@ -79,6 +88,7 @@ A collection of custom WordPress plugins showcasing expertise in **e-commerce**,
 | Plugin | Description | Size | Complexity |
 |--------|-------------|------|------------|
 | **[WC Stripe Installments](./wc-stripe-installments/)** | Complete payment gateway with installments | 500KB+ | Enterprise |
+| **[Hearing Aid Membership](./hearing-aid-membership/)** | SaaS membership system with Stripe | 75KB+ | Enterprise |
 | **[Custom Quiz Plugin](./custom-quiz-plugin/)** | Interactive quiz system with smart routing | 60KB+ | Advanced |
 | **[Geo Store Finder](./geo-located-store-finder/)** | Location-based store locator | 70KB | Professional |
 | **[Scheduled Top Banner](./scheduled-top-banner/)** | Marketing banner with analytics | 83KB | Premium |
