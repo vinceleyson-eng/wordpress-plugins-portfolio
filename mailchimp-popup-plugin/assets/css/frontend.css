@@ -1,91 +1,111 @@
-/**
- * Mailchimp Popup Frontend Styles
- * No close button - must submit to close
- */
+/* Mailchimp Popup - Frontend Styles v1.2.0 */
 
-/* Overlay - blocks entire screen */
+/* Overlay */
 .mcp-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--mcp-overlay, rgba(0,0,0,0.85));
-    z-index: 999999;
+    background-color: var(--mcp-overlay, rgba(0,0,0,0.85));
     display: none;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 999999;
     opacity: 0;
     transition: opacity 0.3s ease;
+    font-family: var(--mcp-font, inherit);
 }
 
-.mcp-overlay.mcp-active {
+.mcp-overlay.active {
     display: flex;
     opacity: 1;
+}
+
+/* Blur background support */
+.mcp-overlay.mcp-blur-bg {
+    background-color: transparent;
+    backdrop-filter: blur(var(--mcp-blur, 5px));
+    -webkit-backdrop-filter: blur(var(--mcp-blur, 5px));
+}
+
+.mcp-overlay.mcp-blur-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--mcp-overlay, rgba(0,0,0,0.85));
+    z-index: -1;
 }
 
 /* Popup Container */
 .mcp-popup {
-    background: var(--mcp-bg, #ffffff);
+    background-color: var(--mcp-bg, #ffffff);
     color: var(--mcp-text, #333333);
-    padding: 50px 40px;
-    border-radius: 16px;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.4);
-    max-width: 450px;
-    width: 90%;
-    position: relative;
-    transform: translateY(30px) scale(0.95);
-    transition: transform 0.4s ease, opacity 0.4s ease;
+    width: var(--mcp-width, 500px);
+    max-width: var(--mcp-max-width, 90%);
+    border-radius: var(--mcp-border-radius, 8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8) translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
+    overflow: hidden;
+    border: var(--mcp-border, none);
 }
 
-.mcp-overlay.mcp-active .mcp-popup {
-    transform: translateY(0) scale(1);
+.mcp-overlay.active .mcp-popup {
+    transform: scale(1) translateY(0);
     opacity: 1;
 }
 
-/* Content */
+/* Content Wrapper */
 .mcp-content {
+    padding: 40px;
     text-align: center;
 }
 
+/* Title */
 .mcp-title {
-    font-size: 28px;
-    font-weight: 700;
     margin: 0 0 15px 0;
-    line-height: 1.3;
+    font-size: var(--mcp-title-size, 28px);
+    font-weight: 600;
     color: inherit;
+    line-height: 1.3;
+    font-family: var(--mcp-font, inherit);
 }
 
+/* Description */
 .mcp-description {
-    font-size: 16px;
+    margin: 0 0 25px 0;
+    font-size: var(--mcp-desc-size, 16px);
     line-height: 1.6;
-    margin: 0 0 30px 0;
-    opacity: 0.8;
     color: inherit;
+    opacity: 0.9;
+    font-family: var(--mcp-font, inherit);
 }
 
 /* Form */
 .mcp-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    margin: 0;
 }
 
 .mcp-form-group {
-    width: 100%;
+    margin-bottom: 15px;
 }
 
+/* Input */
 .mcp-input {
     width: 100%;
-    padding: 16px 20px;
+    padding: 15px 20px;
+    border: 1px solid #ddd;
+    border-radius: var(--mcp-input-radius, 4px);
     font-size: 16px;
-    border: 2px solid #e1e1e1;
-    border-radius: 10px;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
-    text-align: center;
+    font-family: var(--mcp-font, inherit);
 }
 
 .mcp-input:focus {
@@ -97,24 +117,26 @@
     color: #999;
 }
 
+/* Button */
 .mcp-button {
     width: 100%;
-    padding: 16px 30px;
-    font-size: 18px;
-    font-weight: 700;
-    background: var(--mcp-btn-bg, #0073aa);
+    padding: 15px 30px;
+    background-color: var(--mcp-btn-bg, #0073aa);
     color: var(--mcp-btn-text, #ffffff);
     border: none;
-    border-radius: 10px;
+    border-radius: var(--mcp-btn-radius, 4px);
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: background-color 0.2s ease, transform 0.1s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-family: var(--mcp-font, inherit);
 }
 
 .mcp-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    filter: brightness(1.1);
+    transform: translateY(-1px);
 }
 
 .mcp-button:active {
@@ -128,51 +150,92 @@
 }
 
 .mcp-success-icon {
-    width: 70px;
-    height: 70px;
-    background: #00a32a;
+    width: 60px;
+    height: 60px;
+    background-color: #4caf50;
     color: white;
     border-radius: 50%;
-    font-size: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    animation: mcp-checkmark 0.4s ease-out;
-}
-
-@keyframes mcp-checkmark {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    font-size: 30px;
+    margin: 0 auto 15px;
 }
 
 .mcp-success p {
     font-size: 18px;
-    margin: 0;
     color: inherit;
+    margin: 0;
 }
 
-/* Mobile */
-@media (max-width: 500px) {
+/* Mobile Responsive */
+@media (max-width: 600px) {
     .mcp-popup {
-        padding: 40px 25px;
         width: 95%;
-        margin: 15px;
-        border-radius: 12px;
+        max-width: 95%;
+    }
+    
+    .mcp-content {
+        padding: 30px 20px;
     }
     
     .mcp-title {
-        font-size: 24px;
+        font-size: calc(var(--mcp-title-size, 28px) * 0.8);
     }
     
     .mcp-description {
-        font-size: 15px;
+        font-size: calc(var(--mcp-desc-size, 16px) * 0.9);
     }
     
     .mcp-input,
     .mcp-button {
-        padding: 14px 18px;
-        font-size: 16px;
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+}
+
+/* Animation keyframes */
+@keyframes mcpFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes mcpSlideUp {
+    from {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Loading state for button */
+.mcp-button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.mcp-button.loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: mcpSpin 0.8s linear infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+@keyframes mcpSpin {
+    to {
+        transform: rotate(360deg);
     }
 }

@@ -89,6 +89,8 @@ A collection of custom WordPress plugins showcasing expertise in **e-commerce**,
 |--------|-------------|------|------------|
 | **[WC Stripe Installments](./wc-stripe-installments/)** | Complete payment gateway with installments | 500KB+ | Enterprise |
 | **[Hearing Aid Membership](./hearing-aid-membership/)** | SaaS membership system with Stripe | 75KB+ | Enterprise |
+| **[GF Mailchimp Pro](./gf-mailchimp-addon/)** | Gravity Forms to Mailchimp with field mapping | 30KB | Professional |
+| **[Mailchimp Popup Forms](./mailchimp-popup-plugin/)** | Forced-submission popup forms | 70KB | Professional |
 | **[Custom Quiz Plugin](./custom-quiz-plugin/)** | Interactive quiz system with smart routing | 60KB+ | Advanced |
 | **[Geo Store Finder](./geo-located-store-finder/)** | Location-based store locator | 70KB | Professional |
 | **[Scheduled Top Banner](./scheduled-top-banner/)** | Marketing banner with analytics | 83KB | Premium |
