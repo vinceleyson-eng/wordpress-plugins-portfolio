@@ -3,7 +3,7 @@
  * Plugin Name: Multi Location Sitemap
  * Description: Outputs proper XML sitemap and KML for submission to Google Search Console.
  * Version: 1.5
- * Author: Vince
+ * Author: Vince L
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

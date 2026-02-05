@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Displays stores based on visitor's geolocation and proximity to store addresses
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Vince L
  * License: GPL v2 or later
  */
 

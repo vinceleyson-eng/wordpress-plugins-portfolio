@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Gravity Forms to Mailchimp integration with full field mapping
  * Version: 2.1.0
- * Author: Bidview Marketing
+ * Author: Vince L
  * Requires at least: 5.8
  * Requires PHP: 7.4
  */

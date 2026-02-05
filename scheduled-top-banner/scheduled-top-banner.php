@@ -4,7 +4,7 @@
  * Plugin URI: https://yourwebsite.com
  * Description: Display a customizable announcement banner above your header with scheduling capabilities. Perfect for promotions, announcements, and time-limited offers.
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Vince L
  * Author URI: https://yourwebsite.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

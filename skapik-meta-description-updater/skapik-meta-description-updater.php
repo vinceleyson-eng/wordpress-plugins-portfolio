@@ -3,7 +3,7 @@
  * Plugin Name: Skapik Meta Description Bulk Updater v3
  * Description: Bulk update meta descriptions for Yoast, Rank Math, and All in One SEO via REST API
  * Version: 3.0
- * Author: Vince
+ * Author: Vince L
  */
 
 // Prevent direct access

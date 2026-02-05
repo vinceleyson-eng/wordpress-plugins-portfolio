@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Display Mailchimp signup forms in popups - users must submit to close
  * Version: 1.4.3
- * Author: Bidview Marketing
+ * Author: Vince L
  * Text Domain: mc-popup
  * Requires at least: 5.8
  * Requires PHP: 7.4

@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Complete membership management system for hearing aid providers with Stripe integration
  * Version: 1.0.1
- * Author: Bidview Marketing
+ * Author: Vince L
  * Text Domain: ha-membership
  * Requires at least: 5.8
  * Requires PHP: 7.4

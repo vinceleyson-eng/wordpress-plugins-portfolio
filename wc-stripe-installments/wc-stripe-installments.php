@@ -3,7 +3,7 @@
  * Plugin Name: WC Stripe Installments
  * Description: Split WooCommerce payments into 4 installments using Stripe
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Vince L
  * Requires at least: 5.8
  * Requires PHP: 7.4
  */

@@ -4,7 +4,7 @@
  * Plugin URI: https://example.com
  * Description: Create quizzes with custom questions and route users to specific result pages based on their answers
  * Version: 1.4.0
- * Author: Your Name
+ * Author: Vince L
  * Author URI: https://example.com
  * License: GPL v2 or later
  * Text Domain: custom-quiz

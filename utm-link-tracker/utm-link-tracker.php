@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Automatically appends UTM parameters to all internal links for consistent tracking across your site
  * Version: 1.0.0
- * Author: Bidview Marketing
+ * Author: Vince L
  * Text Domain: utm-link-tracker
  * Requires at least: 5.8
  * Requires PHP: 7.4

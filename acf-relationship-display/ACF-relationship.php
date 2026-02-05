@@ -4,7 +4,7 @@
  * Plugin URI: https://yoursite.com
  * Description: Display ACF relationships with custom fields and dynamic titles in Elementor
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Vince L
  * License: GPL v2 or later
  */
 
