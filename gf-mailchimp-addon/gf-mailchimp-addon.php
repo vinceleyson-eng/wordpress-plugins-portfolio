@@ -3,7 +3,7 @@
  * Plugin Name: GF Mailchimp Pro
  * Plugin URI: https://yoursite.com
  * Description: Gravity Forms to Mailchimp integration with full field mapping
- * Version: 2.0.2
+ * Version: 2.1.0
  * Author: Bidview Marketing
  * Requires at least: 5.8
  * Requires PHP: 7.4
@@ -36,6 +36,7 @@ class GF_Mailchimp_Pro {
         // AJAX handlers
         add_action('wp_ajax_gfmc_get_merge_fields', array($this, 'ajax_get_merge_fields'));
         add_action('wp_ajax_gfmc_get_lists', array($this, 'ajax_get_lists'));
+        add_action('wp_ajax_gfmc_get_tags', array($this, 'ajax_get_tags'));
         
         // Admin scripts
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
@@ -226,6 +227,40 @@ class GF_Mailchimp_Pro {
         }
         
         wp_send_json_success($lists);
+    }
+    
+    // AJAX: Get tags for a list
+    public function ajax_get_tags() {
+        check_ajax_referer('gfmc_form_settings', 'gfmc_nonce');
+        
+        $list_id = sanitize_text_field($_POST['list_id']);
+        $selected_tags = isset($_POST['selected_tags']) ? sanitize_text_field($_POST['selected_tags']) : '';
+        
+        if (empty($list_id)) {
+            wp_send_json_error('Missing list_id');
+        }
+        
+        $tags = $this->get_mailchimp_tags($list_id);
+        $selected_array = array_filter(array_map('trim', explode(',', $selected_tags)));
+        
+        // Build HTML for tag checkboxes
+        $html = '';
+        if (!empty($tags)) {
+            $html .= '<div class="gfmc-tags-list" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #fafafa;">';
+            foreach ($tags as $tag) {
+                $checked = in_array($tag['name'], $selected_array) ? 'checked' : '';
+                $html .= '<label style="display: block; margin-bottom: 8px; cursor: pointer;">';
+                $html .= '<input type="checkbox" class="gfmc-tag-checkbox" value="' . esc_attr($tag['name']) . '" ' . $checked . '> ';
+                $html .= esc_html($tag['name']) . ' <span style="color: #888; font-size: 12px;">(' . number_format($tag['member_count']) . ' members)</span>';
+                $html .= '</label>';
+            }
+            $html .= '</div>';
+            $html .= '<p class="description" style="margin-top: 8px;">Select tags to apply to subscribers from this form</p>';
+        } else {
+            $html .= '<p style="color: #666;">No tags found in this audience. You can create new ones below.</p>';
+        }
+        
+        wp_send_json_success(array('html' => $html, 'tags' => $tags));
     }
     
     // AJAX: Get merge fields for a list
@@ -508,10 +543,23 @@ class GF_Mailchimp_Pro {
                         <h3>🏷️ Tags & Options</h3>
                         <table class="form-table">
                             <tr>
-                                <th>Tags</th>
+                                <th>Existing Tags</th>
                                 <td>
-                                    <input type="text" name="gfmc_tags" value="<?php echo esc_attr($settings['tags']); ?>" class="regular-text" placeholder="newsletter, website-signup">
-                                    <p class="description">Tag names (comma-separated) to apply to subscribers from this form</p>
+                                    <div id="gfmc-tags-container">
+                                        <?php if (!empty($settings['list_id'])): ?>
+                                            <p>Loading tags...</p>
+                                        <?php else: ?>
+                                            <p>Select an audience above to see available tags</p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <input type="hidden" name="gfmc_tags" id="gfmc_tags_hidden" value="<?php echo esc_attr($settings['tags']); ?>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Create New Tags</th>
+                                <td>
+                                    <input type="text" name="gfmc_new_tags" id="gfmc_new_tags" value="" class="regular-text" placeholder="new-tag-1, new-tag-2">
+                                    <p class="description">Enter new tag names to create (comma-separated). These will be created in Mailchimp when a subscriber is added.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -548,16 +596,33 @@ class GF_Mailchimp_Pro {
         jQuery(document).ready(function($) {
             console.log('GFMC: Script loaded, form_id=<?php echo esc_js($form_id); ?>');
             
-            // When list changes, fetch merge fields
+            // When list changes, fetch merge fields AND tags
             $('#gfmc_list_id').on('change', function() {
                 console.log('GFMC: List changed to', $(this).val());
                 var listId = $(this).val();
                 if (!listId) {
                     $('#gfmc-merge-fields-container').html('<p>Select an audience first</p>');
+                    $('#gfmc-tags-container').html('<p>Select an audience first</p>');
                     return;
                 }
                 
                 $('#gfmc-merge-fields-container').html('<p>Loading merge fields...</p>');
+                $('#gfmc-tags-container').html('<p>Loading tags...</p>');
+                
+                // Fetch tags
+                $.post(ajaxurl, {
+                    action: 'gfmc_get_tags',
+                    list_id: listId,
+                    selected_tags: $('#gfmc_tags_hidden').val(),
+                    gfmc_nonce: $('#gfmc_nonce').val()
+                }, function(response) {
+                    console.log('GFMC: Tags response', response);
+                    if (response.success) {
+                        $('#gfmc-tags-container').html(response.data.html);
+                    } else {
+                        $('#gfmc-tags-container').html('<p style="color:red;">Error loading tags</p>');
+                    }
+                });
                 
                 var postData = {
                     action: 'gfmc_get_merge_fields',
@@ -578,6 +643,28 @@ class GF_Mailchimp_Pro {
                     console.error('GFMC: AJAX failed', status, error, xhr.responseText);
                     $('#gfmc-merge-fields-container').html('<p style="color:red;">AJAX Error: ' + error + '<br>Response: ' + xhr.responseText.substring(0, 200) + '</p>');
                 });
+            });
+            
+            // Update hidden field when tag checkboxes change
+            $(document).on('change', '.gfmc-tag-checkbox', function() {
+                var selectedTags = [];
+                $('.gfmc-tag-checkbox:checked').each(function() {
+                    selectedTags.push($(this).val());
+                });
+                $('#gfmc_tags_hidden').val(selectedTags.join(', '));
+                console.log('GFMC: Selected tags:', selectedTags);
+            });
+            
+            // On form submit, combine existing tags with new tags
+            $('form').on('submit', function() {
+                var existingTags = $('#gfmc_tags_hidden').val();
+                var newTags = $('#gfmc_new_tags').val();
+                var allTags = [];
+                
+                if (existingTags) allTags.push(existingTags);
+                if (newTags) allTags.push(newTags);
+                
+                $('#gfmc_tags_hidden').val(allTags.join(', '));
             });
             
             // Trigger on page load if list is selected
