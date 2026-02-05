@@ -92,6 +92,12 @@
                 self.closePopup();
             });
             
+            // No thanks / dismiss link
+            this.overlay.find('.mcp-dismiss-link').on('click', function(e) {
+                e.preventDefault();
+                self.closePopup();
+            });
+            
             // Overlay click
             if (mcpData.closeOnOverlay == 1) {
                 this.overlay.on('click', function(e) {
@@ -108,12 +114,78 @@
                 }
             });
             
-            // Form submission
+            // Form submission (API form)
             if (this.form.length) {
                 this.form.on('submit', function(e) {
                     e.preventDefault();
                     self.submitForm();
                 });
+            }
+            
+            // Monitor Mailchimp embed form for submission
+            this.monitorEmbedForm();
+        },
+        
+        monitorEmbedForm: function() {
+            var self = this;
+            var $embedForm = this.overlay.find('.mcp-embed-form');
+            
+            if (!$embedForm.length) {
+                return;
+            }
+            
+            // Find the actual form inside embed
+            var $form = $embedForm.find('form');
+            
+            if ($form.length) {
+                // Listen for form submission
+                $form.on('submit', function() {
+                    // Mailchimp forms typically show a success message after submit
+                    // Wait a moment then check for success indicators
+                    setTimeout(function() {
+                        self.checkEmbedFormSuccess();
+                    }, 2000);
+                });
+            }
+            
+            // Also use MutationObserver to detect Mailchimp success message
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    // Check for Mailchimp success indicators
+                    var html = $embedForm.html().toLowerCase();
+                    if (html.indexOf('thank') !== -1 || 
+                        html.indexOf('success') !== -1 || 
+                        html.indexOf('subscribed') !== -1 ||
+                        html.indexOf('confirm') !== -1) {
+                        // Success detected - close after delay
+                        setTimeout(function() {
+                            self.closePopup();
+                        }, 3000);
+                        observer.disconnect();
+                    }
+                });
+            });
+            
+            observer.observe($embedForm[0], {
+                childList: true,
+                subtree: true,
+                characterData: true
+            });
+        },
+        
+        checkEmbedFormSuccess: function() {
+            var $embedForm = this.overlay.find('.mcp-embed-form');
+            var html = $embedForm.html().toLowerCase();
+            
+            // Check for common Mailchimp success indicators
+            if (html.indexOf('thank') !== -1 || 
+                html.indexOf('success') !== -1 || 
+                html.indexOf('almost finished') !== -1 ||
+                html.indexOf('confirm your subscription') !== -1) {
+                var self = this;
+                setTimeout(function() {
+                    self.closePopup();
+                }, 3000);
             }
         },
         

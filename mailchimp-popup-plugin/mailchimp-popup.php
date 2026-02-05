@@ -262,6 +262,9 @@ class Mailchimp_Popup {
                         <div class="mcp-embed-form">
                             <?php echo get_option('mcp_embed_code'); ?>
                         </div>
+                        <div class="mcp-no-thanks">
+                            <a href="#" class="mcp-dismiss-link">No thanks, close this</a>
+                        </div>
                     <?php else: ?>
                         <form id="mcp-form" class="mcp-form">
                             <div class="mcp-form-group">
