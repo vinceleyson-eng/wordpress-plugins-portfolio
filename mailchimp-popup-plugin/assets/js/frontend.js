@@ -1,5 +1,6 @@
 /**
  * Mailchimp Popup Frontend Script
+ * No close button - must submit to close
  */
 
 (function($) {
@@ -26,11 +27,20 @@
                 return;
             }
             
-            // Bind events
+            // Check if already subscribed
+            if (this.hasSubscribed()) {
+                return;
+            }
+            
+            // Bind form submit
             this.bindEvents();
             
             // Setup triggers
             this.setupTriggers();
+        },
+        
+        hasSubscribed: function() {
+            return this.getCookie('mcp_subscribed') === '1';
         },
         
         shouldShowBasedOnFrequency: function() {
@@ -86,107 +96,30 @@
         bindEvents: function() {
             var self = this;
             
-            // Close button
-            this.overlay.find('.mcp-close').on('click', function(e) {
-                e.preventDefault();
-                self.closePopup();
+            // Form submission
+            this.form.on('submit', function(e) {
+                // Don't prevent default - let form submit to Mailchimp in new tab
+                self.onFormSubmit();
             });
             
-            // No thanks / dismiss link
-            this.overlay.find('.mcp-dismiss-link').on('click', function(e) {
-                e.preventDefault();
-                self.closePopup();
-            });
-            
-            // Overlay click
-            if (mcpData.closeOnOverlay == 1) {
-                this.overlay.on('click', function(e) {
-                    if (e.target === this) {
-                        self.closePopup();
-                    }
-                });
-            }
-            
-            // ESC key
-            $(document).on('keyup', function(e) {
-                if (e.key === 'Escape' && self.overlay.hasClass('mcp-active')) {
-                    self.closePopup();
-                }
-            });
-            
-            // Form submission (API form)
-            if (this.form.length) {
-                this.form.on('submit', function(e) {
-                    e.preventDefault();
-                    self.submitForm();
-                });
-            }
-            
-            // Monitor Mailchimp embed form for submission
-            this.monitorEmbedForm();
+            // Prevent closing by clicking overlay or pressing ESC
+            // Users MUST submit to close
         },
         
-        monitorEmbedForm: function() {
+        onFormSubmit: function() {
             var self = this;
-            var $embedForm = this.overlay.find('.mcp-embed-form');
             
-            if (!$embedForm.length) {
-                return;
-            }
+            // Mark as subscribed
+            this.setCookie('mcp_subscribed', '1', 365);
             
-            // Find the actual form inside embed
-            var $form = $embedForm.find('form');
+            // Hide form, show success
+            this.form.hide();
+            $('#mcp-success').show();
             
-            if ($form.length) {
-                // Listen for form submission
-                $form.on('submit', function() {
-                    // Mailchimp forms typically show a success message after submit
-                    // Wait a moment then check for success indicators
-                    setTimeout(function() {
-                        self.checkEmbedFormSuccess();
-                    }, 2000);
-                });
-            }
-            
-            // Also use MutationObserver to detect Mailchimp success message
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    // Check for Mailchimp success indicators
-                    var html = $embedForm.html().toLowerCase();
-                    if (html.indexOf('thank') !== -1 || 
-                        html.indexOf('success') !== -1 || 
-                        html.indexOf('subscribed') !== -1 ||
-                        html.indexOf('confirm') !== -1) {
-                        // Success detected - close after delay
-                        setTimeout(function() {
-                            self.closePopup();
-                        }, 3000);
-                        observer.disconnect();
-                    }
-                });
-            });
-            
-            observer.observe($embedForm[0], {
-                childList: true,
-                subtree: true,
-                characterData: true
-            });
-        },
-        
-        checkEmbedFormSuccess: function() {
-            var $embedForm = this.overlay.find('.mcp-embed-form');
-            var html = $embedForm.html().toLowerCase();
-            
-            // Check for common Mailchimp success indicators
-            if (html.indexOf('thank') !== -1 || 
-                html.indexOf('success') !== -1 || 
-                html.indexOf('almost finished') !== -1 ||
-                html.indexOf('confirm your subscription') !== -1) {
-                var self = this;
-                setTimeout(function() {
-                    self.closePopup();
-                }, 3000);
-            }
+            // Close popup after delay
+            setTimeout(function() {
+                self.closePopup();
+            }, 3000);
         },
         
         setupTriggers: function() {
@@ -209,15 +142,6 @@
                 case 'scroll':
                     this.setupScrollTrigger();
                     break;
-                    
-                case 'exit_intent':
-                    this.setupExitIntent();
-                    break;
-            }
-            
-            // Additional exit intent (if enabled alongside other triggers)
-            if (triggerType !== 'exit_intent' && mcpData.exitIntent == 1) {
-                this.setupExitIntent();
             }
         },
         
@@ -241,35 +165,13 @@
             });
         },
         
-        setupExitIntent: function() {
-            var self = this;
-            
-            // Desktop only - detect mouse leaving viewport
-            if ('ontouchstart' in window) {
-                return;
-            }
-            
-            $(document).on('mouseleave.mcp', function(e) {
-                if (self.hasShown) return;
-                
-                // Only trigger if mouse leaves from top
-                if (e.clientY <= 0) {
-                    self.showPopup();
-                    $(document).off('mouseleave.mcp');
-                }
-            });
-        },
-        
         showPopup: function() {
             if (this.hasShown) return;
             
             this.hasShown = true;
             this.markAsShown();
             
-            // Add animation class
-            this.overlay.addClass('mcp-animation-' + mcpData.animation);
-            
-            // Show
+            // Show popup
             this.overlay.addClass('mcp-active');
             
             // Prevent body scroll
@@ -282,80 +184,8 @@
         },
         
         closePopup: function() {
-            var self = this;
-            
             this.overlay.removeClass('mcp-active');
             $('body').css('overflow', '');
-            
-            // Track dismiss
-            $.post(mcpData.ajaxUrl, {
-                action: 'mcp_dismiss',
-                nonce: mcpData.nonce
-            });
-        },
-        
-        submitForm: function() {
-            var self = this;
-            var $form = this.form;
-            var $button = $form.find('.mcp-button');
-            var $message = $('#mcp-message');
-            var email = $form.find('input[name="email"]').val();
-            
-            // Validate
-            if (!email || !this.isValidEmail(email)) {
-                this.showMessage('Please enter a valid email address.', 'error');
-                return;
-            }
-            
-            // Loading state
-            $form.addClass('mcp-loading');
-            $button.prop('disabled', true);
-            $message.hide();
-            
-            $.ajax({
-                url: mcpData.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'mcp_subscribe',
-                    nonce: mcpData.nonce,
-                    email: email
-                },
-                success: function(response) {
-                    $form.removeClass('mcp-loading');
-                    $button.prop('disabled', false);
-                    
-                    if (response.success) {
-                        self.showMessage(response.data.message, 'success');
-                        $form.hide();
-                        
-                        // Auto close after success
-                        setTimeout(function() {
-                            self.closePopup();
-                        }, 3000);
-                    } else {
-                        self.showMessage(response.data.message, 'error');
-                    }
-                },
-                error: function() {
-                    $form.removeClass('mcp-loading');
-                    $button.prop('disabled', false);
-                    self.showMessage('Something went wrong. Please try again.', 'error');
-                }
-            });
-        },
-        
-        showMessage: function(text, type) {
-            var $message = $('#mcp-message');
-            $message
-                .removeClass('mcp-success mcp-error')
-                .addClass('mcp-' + type)
-                .text(text)
-                .show();
-        },
-        
-        isValidEmail: function(email) {
-            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
         },
         
         setCookie: function(name, value, days) {
@@ -380,7 +210,6 @@
         }
     };
     
-    // Initialize when DOM ready
     $(document).ready(function() {
         MCP.init();
     });

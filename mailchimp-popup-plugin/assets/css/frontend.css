@@ -1,15 +1,16 @@
 /**
  * Mailchimp Popup Frontend Styles
+ * No close button - must submit to close
  */
 
-/* Overlay */
+/* Overlay - blocks entire screen */
 .mcp-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--mcp-overlay, rgba(0,0,0,0.6));
+    background: var(--mcp-overlay, rgba(0,0,0,0.85));
     z-index: 999999;
     display: none;
     align-items: center;
@@ -27,130 +28,20 @@
 .mcp-popup {
     background: var(--mcp-bg, #ffffff);
     color: var(--mcp-text, #333333);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 480px;
+    padding: 50px 40px;
+    border-radius: 16px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    max-width: 450px;
     width: 90%;
     position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s ease, opacity 0.4s ease;
     opacity: 0;
 }
 
 .mcp-overlay.mcp-active .mcp-popup {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
-}
-
-/* Positions */
-.mcp-position-center {
-    /* Default - centered */
-}
-
-.mcp-position-top {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-}
-
-.mcp-overlay.mcp-active .mcp-position-top {
-    transform: translateX(-50%) translateY(0);
-}
-
-.mcp-position-bottom {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-}
-
-.mcp-overlay.mcp-active .mcp-position-bottom {
-    transform: translateX(-50%) translateY(0);
-}
-
-.mcp-position-bottom-right {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    transform: translateX(20px);
-}
-
-.mcp-overlay.mcp-active .mcp-position-bottom-right {
-    transform: translateX(0);
-}
-
-.mcp-position-bottom-left {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    transform: translateX(-20px);
-}
-
-.mcp-overlay.mcp-active .mcp-position-bottom-left {
-    transform: translateX(0);
-}
-
-/* Animations */
-.mcp-animation-fade .mcp-popup {
-    transform: none;
-}
-
-.mcp-animation-slide-up .mcp-popup {
-    transform: translateY(50px);
-}
-
-.mcp-animation-slide-down .mcp-popup {
-    transform: translateY(-50px);
-}
-
-.mcp-animation-zoom .mcp-popup {
-    transform: scale(0.8);
-}
-
-.mcp-overlay.mcp-active .mcp-animation-fade .mcp-popup,
-.mcp-overlay.mcp-active .mcp-animation-slide-up .mcp-popup,
-.mcp-overlay.mcp-active .mcp-animation-slide-down .mcp-popup {
-    transform: translateY(0);
-}
-
-.mcp-overlay.mcp-active .mcp-animation-zoom .mcp-popup {
-    transform: scale(1);
-}
-
-.mcp-animation-none .mcp-popup {
-    transition: none;
-    transform: none;
-    opacity: 1;
-}
-
-/* Close Button - Always visible */
-.mcp-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.1);
-    border: none;
-    font-size: 24px;
-    line-height: 1;
-    color: var(--mcp-text, #333);
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s, background 0.2s;
-    padding: 5px 12px;
-    border-radius: 50%;
-    z-index: 10;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mcp-close:hover {
-    opacity: 1;
-    background: rgba(0,0,0,0.15);
 }
 
 /* Content */
@@ -169,8 +60,8 @@
 .mcp-description {
     font-size: 16px;
     line-height: 1.6;
-    margin: 0 0 25px 0;
-    opacity: 0.85;
+    margin: 0 0 30px 0;
+    opacity: 0.8;
     color: inherit;
 }
 
@@ -187,164 +78,101 @@
 
 .mcp-input {
     width: 100%;
-    padding: 14px 18px;
+    padding: 16px 20px;
     font-size: 16px;
     border: 2px solid #e1e1e1;
-    border-radius: 8px;
+    border-radius: 10px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .mcp-input:focus {
     border-color: var(--mcp-btn-bg, #0073aa);
+    box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.1);
+}
+
+.mcp-input::placeholder {
+    color: #999;
 }
 
 .mcp-button {
     width: 100%;
-    padding: 14px 24px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: 16px 30px;
+    font-size: 18px;
+    font-weight: 700;
     background: var(--mcp-btn-bg, #0073aa);
     color: var(--mcp-btn-text, #ffffff);
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .mcp-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
 }
 
 .mcp-button:active {
     transform: translateY(0);
 }
 
-.mcp-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Messages */
-.mcp-message {
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    font-size: 15px;
-}
-
-.mcp-message.mcp-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.mcp-message.mcp-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* No thanks link */
-.mcp-no-thanks {
-    margin-top: 20px;
+/* Success State */
+.mcp-success {
     text-align: center;
+    padding: 20px 0;
 }
 
-.mcp-dismiss-link {
-    color: var(--mcp-text, #333);
-    opacity: 0.6;
-    font-size: 13px;
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-
-.mcp-dismiss-link:hover {
-    opacity: 1;
-    text-decoration: underline;
-}
-
-/* Embed form styling */
-.mcp-embed-form {
-    text-align: left;
-}
-
-.mcp-embed-form input[type="email"],
-.mcp-embed-form input[type="text"] {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 10px;
-    border: 2px solid #e1e1e1;
-    border-radius: 6px;
-    font-size: 15px;
-}
-
-.mcp-embed-form input[type="submit"],
-.mcp-embed-form button {
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--mcp-btn-bg, #0073aa);
-    color: var(--mcp-btn-text, #ffffff);
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-/* Loading state */
-.mcp-loading .mcp-button {
-    position: relative;
-    color: transparent;
-}
-
-.mcp-loading .mcp-button::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid transparent;
-    border-top-color: var(--mcp-btn-text, #ffffff);
+.mcp-success-icon {
+    width: 70px;
+    height: 70px;
+    background: #00a32a;
+    color: white;
     border-radius: 50%;
-    animation: mcp-spin 0.8s linear infinite;
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: mcp-checkmark 0.4s ease-out;
 }
 
-@keyframes mcp-spin {
-    to { transform: rotate(360deg); }
+@keyframes mcp-checkmark {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.mcp-success p {
+    font-size: 18px;
+    margin: 0;
+    color: inherit;
 }
 
 /* Mobile */
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .mcp-popup {
-        padding: 30px 25px;
+        padding: 40px 25px;
         width: 95%;
-        max-width: none;
-        margin: 10px;
+        margin: 15px;
+        border-radius: 12px;
     }
     
     .mcp-title {
-        font-size: 22px;
+        font-size: 24px;
     }
     
     .mcp-description {
-        font-size: 14px;
+        font-size: 15px;
     }
     
-    .mcp-position-bottom-right,
-    .mcp-position-bottom-left {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-    }
-    
-    .mcp-overlay.mcp-active .mcp-position-bottom-right,
-    .mcp-overlay.mcp-active .mcp-position-bottom-left {
-        transform: translateX(-50%);
+    .mcp-input,
+    .mcp-button {
+        padding: 14px 18px;
+        font-size: 16px;
     }
 }
