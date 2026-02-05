@@ -1,0 +1,23 @@
+/**
+ * Mailchimp Popup Admin Styles
+ */
+
+.mcp-settings .form-table th {
+    width: 200px;
+    padding: 15px 10px 15px 0;
+}
+
+.mcp-settings .form-table td {
+    padding: 10px;
+}
+
+.mcp-settings .description {
+    font-style: italic;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Color pickers */
+.mcp-settings .wp-picker-container {
+    display: inline-block;
+}
