@@ -38,7 +38,9 @@ class Quiz_Post_Types {
             'has_archive' => false,
             'rewrite' => false,
             'capability_type' => 'post',
-            'menu_position' => 20
+            'menu_position' => 20,
+            'show_in_rest' => true,
+            'rest_base' => 'quiz_question'
         );
         
         register_post_type('quiz_question', $question_args);
@@ -68,7 +70,9 @@ class Quiz_Post_Types {
             'has_archive' => true,
             'rewrite' => array('slug' => 'quiz'),
             'capability_type' => 'post',
-            'menu_position' => 21
+            'menu_position' => 21,
+            'show_in_rest' => true,
+            'rest_base' => 'quiz'
         );
         
         register_post_type('quiz', $quiz_args);
