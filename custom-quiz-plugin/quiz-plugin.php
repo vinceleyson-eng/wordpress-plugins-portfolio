@@ -26,6 +26,7 @@ require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-meta-boxes.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-shortcode.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-ajax.php';
 require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-import-export.php';
+require_once CUSTOM_QUIZ_PATH . 'includes/class-quiz-rest-api.php';
 
 /**
  * Initialize the plugin
@@ -36,6 +37,7 @@ function custom_quiz_init() {
     new Quiz_Shortcode();
     new Quiz_Ajax();
     new Quiz_Import_Export();
+    new Quiz_REST_API();
 }
 add_action('plugins_loaded', 'custom_quiz_init');
 
