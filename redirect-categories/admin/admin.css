@@ -1,0 +1,69 @@
+/* =========================================================
+   Redirect Categories — Admin Styles
+   ========================================================= */
+
+.rc-wrap h1 { margin-bottom: 0; }
+
+.rc-sync-btn { margin-left: 4px !important; }
+
+/* Summary bar */
+.rc-summary-bar {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin: 12px 0 0;
+	flex-wrap: wrap;
+}
+.rc-sum-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #555; }
+
+/* Add/Edit form box */
+.rc-form-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	padding: 16px 20px 4px;
+	margin: 16px 0;
+	max-width: 780px;
+}
+.rc-form-box h2 { margin-top: 0; }
+
+/* Table */
+.rc-table { margin-top: 16px; }
+.rc-table td { vertical-align: middle; }
+
+/* Pending row highlight */
+.rc-row-pending td { background-color: #fffbe6 !important; }
+
+/* Badges */
+.rc-badge {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1;
+	padding: 3px 7px;
+	border-radius: 3px;
+	text-transform: uppercase;
+	letter-spacing: .3px;
+	white-space: nowrap;
+}
+
+/* Match status badges */
+.rc-badge-auto-matched { background: #00a32a; color: #fff; }
+.rc-badge-suggested    { background: #d63638; color: #fff; }
+.rc-badge-manual       { background: #0073aa; color: #fff; }
+.rc-badge-pending      { background: #f0ad00; color: #fff; }
+
+/* Active/Off badges */
+.rc-badge-active { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.rc-badge-off    { background: #f1f1f1; color: #888;    border: 1px solid #ccc; }
+
+/* No URL placeholder */
+.rc-no-url { color: #999; font-style: italic; }
+
+/* Delete button */
+.rc-btn-delete { color: #d63638 !important; border-color: #d63638 !important; margin-left: 4px !important; }
+.rc-btn-delete:hover { background: #d63638 !important; color: #fff !important; }
+
+/* Footer */
+.rc-footer      { margin-top: 10px; color: #555; }
+.rc-needs-url   { color: #d63638; }
